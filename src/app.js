@@ -59,16 +59,25 @@ app.use("/", (req, res, next) => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )  ENGINE=INNODB;
     `;
-    const insertRecordsSQL = `
-      INSERT INTO clientes (nombre, correo, tel) VALUES
-      ('Cliente 1', 'cliente1@example.com', '123456789'),
-      ('Cliente 2', 'cliente2@example.com', '987654321'),
-      ('Cliente 3', 'cliente3@example.com', '555555555');
-    `;
+    const selectRecordsSQL = `SELECT * FROM clientes LIMIT 1`;
     connection.query(createTableSQL, (err, result) => {
       if (err) return next(err);
-      connection.query(insertRecordsSQL, (err, result) => {
+      // Verificar si ya hay registros en la tabla
+      connection.query(selectRecordsSQL, (err, rows) => {
         if (err) return next(err);
+        if (rows.length === 0) {
+          // Insertar registros predefinidos solo si la tabla está vacía
+          const insertRecordsSQL = `
+            INSERT INTO clientes (nombre, correo, tel) VALUES
+            ('Cliente 1', 'cliente1@example.com', '123456789'),
+            ('Cliente 2', 'cliente2@example.com', '987654321'),
+            ('Cliente 3', 'cliente3@example.com', '555555555');
+          `;
+          connection.query(insertRecordsSQL, (err, result) => {
+            if (err) return next(err);
+            console.log("Registros de clientes insertados correctamente");
+          });
+        }
         next(); // Llama al siguiente middleware
       });
     });
@@ -87,16 +96,25 @@ app.use("/", (req, res, next) => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )  ENGINE=INNODB;
     `;
-    const insertRecordsSQL = `
-      INSERT INTO productos (producto, precio) VALUES
-      ('Producto 1', 10.99),
-      ('Producto 2', 20.50),
-      ('Producto 3', 15.75);
-    `;
+    const selectRecordsSQL = `SELECT * FROM productos LIMIT 1`;
     connection.query(createTableSQL, (err, result) => {
       if (err) return next(err);
-      connection.query(insertRecordsSQL, (err, result) => {
+      // Verificar si ya hay registros en la tabla
+      connection.query(selectRecordsSQL, (err, rows) => {
         if (err) return next(err);
+        if (rows.length === 0) {
+          // Insertar registros predefinidos solo si la tabla está vacía
+          const insertRecordsSQL = `
+            INSERT INTO productos (producto, precio) VALUES
+            ('Producto 1', 10.99),
+            ('Producto 2', 20.50),
+            ('Producto 3', 15.75);
+          `;
+          connection.query(insertRecordsSQL, (err, result) => {
+            if (err) return next(err);
+            console.log("Registros de productos insertados correctamente");
+          });
+        }
         next(); // Llama al siguiente middleware
       });
     });
